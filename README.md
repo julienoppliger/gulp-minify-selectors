@@ -1,4 +1,7 @@
-# gulp-minify-selectors [![npm version](https://badge.fury.io/js/gulp-minify-selectors.svg)](https://www.npmjs.com/package/gulp-minify-selectors) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# gulp-minify-selectors 
+-------------------
+[![npm version](https://badge.fury.io/js/gulp-minify-selectors.svg)](https://www.npmjs.com/package/gulp-minify-selectors) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 > A simple [gulp](https://github.com/wearefractal/gulp) plugin to minify selectors through your entire project.
 
 ## Install
@@ -14,7 +17,7 @@ yarn add --dev gulp-minify-selectors
 ```
 ## How it work
 
-*gulp-minify-selectors* track down selectors in your entire project and replace them by a very short lexicographical string. This process drastically reduce you code size.
+*gulp-minify-selectors* track down selectors in your entire project and replace them by a very short lexicographical string. This process drastically reduce your code size.
 
 **It will take this code**
 
@@ -92,15 +95,18 @@ var minifySelectors = require('gulp-minify-selectors');
 
 return gulp.src(['src/style.css','src/index.js', 'src/index.html'])
   .pipe(minifySelectors({
-    prefix: 'my-custom-prefix-',
+    prefix: 'prefix-',
     suffix: '-suffix'
   }))
   .pipe(gulp.dest('dist'))
 ```
 
-To fetch your selectors *gulp-minify-selectors* use some patterns. This patterns can be *prefix*, *suffix* or both *prefix and suffix*. In most cases, a prefix is good enough, but if you face a problem because it is interfering with something in your code, then, it would be more appropriate to use both prefix and suffix
+To fetch your selectors *gulp-minify-selectors* use some patterns. This patterns can be *prefix*, *suffix* or both *prefix and suffix*. In most cases, a prefix is good enough, but if you face a problem because it is interfering with something in your code, then, it would be more appropriate to use both prefix and suffix.
 
 If you don't provide at least one of them it will throw an error.
+
+
+⚠️ **Warning** : If you don't explicitly override the default options, they will be applied. To be clear, if you pass this object: `{suffix: '-end'}`, the regex will use both *-s-* prefix and *-end* suffix. If you only want to use suffix without any prefix, you should pass `{prefix: null, suffix: '-end'}`.
 
 #### Error handling
 
@@ -135,7 +141,8 @@ By default an error will interupt the building process. If you want to get rid o
 ```js
 minifySelectors({
   prefix: 'prefix-',
-  suffix: '-suffix'
+  suffix: '-suffix',
+  verbose: true
 })
 ```
 
@@ -145,6 +152,7 @@ Available options are:
 
 * `prefix` ( string | null ) : The prefix use to find your selector
 * `suffix` ( string | null ) : The suffix use to find your selector
+* `verbose` ( boolean ) : Enable verbose mode (show size reduction)
 
 ## License
 

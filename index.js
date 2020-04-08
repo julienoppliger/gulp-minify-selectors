@@ -2,43 +2,41 @@
 
 const PluginError = require('plugin-error');
 const through = require('through2');
+const chalk = require('chalk');
 
 const PLUGIN_NAME = 'gulp-minify-selectors';
 
 const selectors = [];
 
-function gulpMinifySelectors(options = {
-	prefix: '-s-',
-	suffix: ''
-}) {
-	return through.obj(function (file, encoding, callback) {
+function gulpMinifySelectors( options = {} ) {
+	return through.obj(function (file, encoding, next) {
 
 		// @ Parameter filtering
-		if (!options.prefix || options.prefix === '') options.prefix = null;
-		if (!options.suffix || options.suffix === '') options.suffix = null;
-		if (!options.prefix && !options.suffix) {
-			this.emit('error', new PluginError(PLUGIN_NAME, 'gulpMinifySelectors need a prefix or a suffix or both.'));
-			return callback(null, file);
-		}
+
+		if (!options.prefix) options.prefix = '-s-';
+		if (!options.suffix) options.suffix = null;
+		if (options.prefix === '') options.prefix = null;
+		if (options.suffix === '') options.suffix = null;		
+
 
 		// @ File checking
 
 		if (file.isNull()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'No file provided'));
-			return callback(null, file);
+			return next(null, file);
 		}
 
 		if (file.isDirectory()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Directories aren\'t supported'));
-			return callback(null, file);
+			return next(null, file);
 		}
 
 		if (file.isStream()) {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streaming not supported'));
-			return callback(null, file);
+			return next(null, file);
 		}
 
-		try {
+		try {			
 
 			// @ Retrieve selectors and generate minified verision
 
@@ -77,15 +75,33 @@ function gulpMinifySelectors(options = {
 			// @ Put the minified content in a new file
 
 			const newfile = file.clone();
-			newfile.contents = new Buffer.from(content);
+			newfile.contents = new Buffer.from(content);			
+
+			if( options.verbose ) {
+				let colors = ['#F2AA00','#F5C900','#F7E800','#EAF900','#CEFB00','#B0FC00','#93FD00','#75FE00','#57FE00','#38FF00'];
+				let data = {
+					file: file.basename,
+					size_from: (file.contents.length / 1000).toFixed(2),
+					size_to: (newfile.contents.length / 1000).toFixed(2),
+					reduced_by: 100 - Math.round(newfile.contents.length/file.contents.length*100)
+				}
+				let report = `[${chalk.hex("#AAA")("gulp-minify-selectors")}]`;
+				report += `[${chalk.bold(data.file)}]: `;
+				report += `${data.size_from}Kb`;
+				report += ' => ';
+				report += `${data.size_to}Kb `;
+				report += `(${chalk.hex(colors[Math.round(data.reduced_by/10)])(data.reduced_by + '%')})`;
+
+				console.log(report);				
+			}
 
 			// @ Return to pipeline
 
-			return callback(null, newfile);
+			return next(null, newfile);
 		}
 		catch (error) {
 			this.emit('error', new PluginError(PLUGIN_NAME, error.message));
-			return callback(null, file);
+			return next(null, file);
 		}
 	});
 }

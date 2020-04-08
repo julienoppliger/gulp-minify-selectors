@@ -11,3 +11,6 @@
 ## 1.0.1
 > Tests setup and fixes
 
+## 1.1.0
+> Add verbose mode
+
