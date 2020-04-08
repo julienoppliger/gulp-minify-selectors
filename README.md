@@ -1,5 +1,4 @@
 # gulp-minify-selectors 
--------------------
 [![npm version](https://badge.fury.io/js/gulp-minify-selectors.svg)](https://www.npmjs.com/package/gulp-minify-selectors) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 > A simple [gulp](https://github.com/wearefractal/gulp) plugin to minify selectors through your entire project.
