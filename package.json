@@ -1,6 +1,6 @@
 {
   "name": "gulp-minify-selectors",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple gulp plugin to minify selectors through your entire project",
   "main": "index.js",
   "author": "Julien OPPLIGER",
