@@ -1,0 +1,4 @@
+.a { display: flex; flex-direction: column; font-family: "Roboto", sans-serif; }
+.b { height: 200px; }
+.c { font-size: 1.5rem; font-weight: bold; }
+.d { font-size: 1.2rem; }

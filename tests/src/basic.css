@@ -1,0 +1,4 @@
+.-s-Card { display: flex; flex-direction: column; font-family: "Roboto", sans-serif; }
+.-s-Card__Image { height: 200px; }
+.-s-Card__Headline { font-size: 1.5rem; font-weight: bold; }
+.-s-Card__Text { font-size: 1.2rem; }

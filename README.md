@@ -1,5 +1,5 @@
-# [gulp](https://github.com/wearefractal/gulp)-minify-selectors 
-> A simple gulp plugin to minify selectors name through your entire project
+# gulp-minify-selectors [![npm version](https://badge.fury.io/js/gulp-minify-selectors.svg)](https://www.npmjs.com/package/gulp-minify-selectors)
+> A simple [gulp](https://github.com/wearefractal/gulp) plugin to minify selectors through your entire project.
 
 ## Install
 
@@ -12,10 +12,63 @@ Or with [yarn](https://yarnpkg.com/package/gulp-minify-selectors).
 ```
 yarn add --dev gulp-minify-selectors
 ```
+## How it work
+
+*gulp-minify-selectors* track down selectors in your entire project and replace them by a very short lexicographical string. This process drastically reduce you code size.
+
+**It will take this code**
+
+```html
+<div class="-s-Card">
+  <div class="-s-Card__Image">
+    <img src="assets/images/illustration.jpg">
+  </div>
+  <div class="-s-Card__Headline">
+    <span>Hello world !</span>
+  </div>
+  <p class="-s-Card__Text">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  </p>
+</div>
+```
+```css
+.-s-Card { display: flex; flex-direction: column; font-family: "Roboto", sans-serif; }
+.-s-Card__Image { height: 200px; }
+.-s-Card__Headline { font-size: 1.5rem; font-weight: bold; }
+.-s-Card__Text { font-size: 1.2rem; }
+```
+```js
+let card = document.querySelector("-s-Card");
+```
+
+**and turn it into this code**
+
+```html
+<div class="a">
+  <div class="b">
+    <img src="assets/images/illustration.jpg">
+  </div>
+  <div class="c">
+    <span>Hello world !</span>
+  </div>
+  <p class="d">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  </p>
+</div>
+```
+```css
+.a { display: flex; flex-direction: column; font-family: "Roboto", sans-serif; }
+.b { height: 200px; }
+.c { font-size: 1.5rem; font-weight: bold; }
+.d { font-size: 1.2rem; }
+```
+```js
+let card = document.querySelector("a");
+```
 
 ## Examples
 
-#### Basic exemple
+#### Basic example
 
 ```js
 var gulp = require('gulp');
@@ -25,10 +78,11 @@ return gulp.src(['src/style.css','src/index.js', 'src/index.html'])
   .pipe(minifySelectors())
   .pipe(gulp.dest('dist'))
 ```
-You can use *gulp-minify-selectors* with every file extension since it use simple regex to operate the replacements. This exemple show *.css*, *.js* and *.html* but you can also do it with *.jsx*, *.pug*, *.scss*, *.ts* or wethever you want. 
-The only things you have to do is the prefix or suffix or prefix and suffix your actual selectors so that the tool can recognize them. **By default it expect *-s-* prefix and no suffix**.
+You can use *gulp-minify-selectors* with every file extension since it uses basic regex to operate the substitutions. This example show *.css*, *.js* and *.html* but you can also do it with *.jsx*, *.pug*, *.scss*, *.ts* or wathever you want. 
 
-You can obviously override default settings like the following exemple:
+The only things you have to do is the prefix or suffix or prefix and suffix your actual selectors so that the tool can identify them. **By default it expect *-s-* prefix and no suffix**.
+
+You can obviously override default settings by passing an options object like the following example:
 
 #### Use with options object
 
@@ -44,7 +98,9 @@ return gulp.src(['src/style.css','src/index.js', 'src/index.html'])
   .pipe(gulp.dest('dist'))
 ```
 
-To fetch your selector *gulp-minify-selectors* use some patterns. This patterns can be *prefix*, *suffix* or both *prefix and suffix*. In most cases, a prefix is good enough, but if you encounter a problem because it interfer with something in your code, you can use prefix and suffix which is stronger. If you don't provide at least one of them it will throw an error.
+To fetch your selectors *gulp-minify-selectors* use some patterns. This patterns can be *prefix*, *suffix* or both *prefix and suffix*. In most cases, a prefix is good enough, but if you face a problem because it is interfering with something in your code, then, it would be more appropriate to use both prefix and suffix
+
+If you don't provide at least one of them it will throw an error.
 
 #### Error handling
 
@@ -69,12 +125,12 @@ return gulp.src(['src/style.css','src/index.js', 'src/index.html'])
 });
 ```
 
-By default an error will interupt the building process. If you want to get rid of this inconvenience you can handle the error by catching the *error* event like in this exemple. 
+By default an error will interupt the building process. If you want to get rid of this inconvenience you can handle the error by catching the *error* event as shown in this example.
 
 
-## Options
+## API
 
-Function `minifySelectors(options?)` take an facultative options object as parameter.
+> `minifySelectors([options])`
 
 ```js
 minifySelectors({
@@ -82,6 +138,8 @@ minifySelectors({
   suffix: '-suffix'
 })
 ```
+
+#### Options
 
 Available options are:
 

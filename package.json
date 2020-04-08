@@ -1,15 +1,15 @@
 {
   "name": "gulp-minify-selectors",
   "version": "1.0.0",
-  "description": "A simple gulp plugin to minify selectors name through your entire project",
+  "description": "A simple gulp plugin to minify selectors through your entire project",
   "main": "index.js",
   "author": "Julien OPPLIGER",
   "license": "MIT",
   "engines": {
-    "node": ">=4.0"
+    "node": ">=6.0.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "mocha ./index.test.js"
   },
   "keywords": [
     "gulp",
@@ -28,6 +28,12 @@
     "through2": "^3.0.1"
   },
   "devDependencies": {
-    "jest": "^25.2.7"
+    "chai": "^4.2.0",
+    "chai-files": "^1.4.0",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "mocha": "^7.1.1"
   }
 }

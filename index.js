@@ -1,131 +1,130 @@
-"use strict";
+'use strict';
 
-const PluginError = require("plugin-error");
-const through = require("through2");
+const PluginError = require('plugin-error');
+const through = require('through2');
 
-const PLUGIN_NAME = "gulp-minify-selectors";
+const PLUGIN_NAME = 'gulp-minify-selectors';
 
-let selectors = []
+const selectors = [];
 
-function gulpMinifySelectors ( options = {
-  prefix: '-s-',
-  suffix: ''
-} ) {
-  return through.obj(function (file, encoding, callback) {
+function gulpMinifySelectors(options = {
+	prefix: '-s-',
+	suffix: ''
+}) {
+	return through.obj(function (file, encoding, callback) {
 
-    // @ Parameter filtering
-    if( !options.prefix || options.prefix == '') options.prefix = null
-    if( !options.suffix || options.suffix == '') options.suffix = null
-    if( !options.prefix && !options.suffix ) {
-      this.emit("error", new PluginError(PLUGIN_NAME, "gulpMinifySelectors need a prefix or a suffix or both."));
-      return callback(null, file);
-    }
+		// @ Parameter filtering
+		if (!options.prefix || options.prefix === '') options.prefix = null;
+		if (!options.suffix || options.suffix === '') options.suffix = null;
+		if (!options.prefix && !options.suffix) {
+			this.emit('error', new PluginError(PLUGIN_NAME, 'gulpMinifySelectors need a prefix or a suffix or both.'));
+			return callback(null, file);
+		}
 
-    // @ File checking
+		// @ File checking
 
-    if (file.isNull()) {
-      this.emit("error", new PluginError(PLUGIN_NAME, "No file provided"));
-      return callback(null, file);
-    }
+		if (file.isNull()) {
+			this.emit('error', new PluginError(PLUGIN_NAME, 'No file provided'));
+			return callback(null, file);
+		}
 
-    if (file.isDirectory()) {
-      this.emit("error", new PluginError(PLUGIN_NAME, "Directories aren't supported"));
-      return callback(null, file);
-    }
+		if (file.isDirectory()) {
+			this.emit('error', new PluginError(PLUGIN_NAME, 'Directories aren\'t supported'));
+			return callback(null, file);
+		}
 
-    if (file.isStream()) {
-        this.emit("error", new PluginError(PLUGIN_NAME, "Streaming not supported"));
-        return callback(null, file);
-    }
+		if (file.isStream()) {
+			this.emit('error', new PluginError(PLUGIN_NAME, 'Streaming not supported'));
+			return callback(null, file);
+		}
 
-    try {
+		try {
 
-      // @ Retrieve selectors and generate minified verision
+			// @ Retrieve selectors and generate minified verision
 
-      let content = file.contents.toString(encoding);
-      let reg;
-      if( options.prefix && options.suffix )
-        reg = new RegExp(`(${options.prefix}.*?${options.suffix})`)
-      if( options.prefix && !options.suffix )
-        reg = new RegExp(`"?(${options.prefix}.*?)[" ,:.]`,'g');
-      if( !options.prefix && options.suffix )
-        reg = new RegExp(`[" ,:.]([^" ,:.]*?${options.suffix})`)
-      let result;
-            
+			let content = file.contents.toString(encoding);
+			let reg;
+			if (options.prefix && options.suffix)
+				reg = new RegExp(`(${options.prefix}.*?${options.suffix})`);
+			if (options.prefix && !options.suffix)
+				reg = new RegExp(`"?(${options.prefix}.*?)["' ,:.]`, 'g');
+			if (!options.prefix && options.suffix)
+				reg = new RegExp(`["' ,:.]([^"' ,:.]*?${options.suffix})`);
+			let result;
 
-      for( let cnt = Object.keys(selectors).length; (result = reg.exec(content)) !== null; ) {
-        if( selectors.map(x => x.sel).indexOf(result[1]) === -1 ){
-          selectors.push({ sel: result[1], mini: genLexStr(cnt++)});
-        }
-      }          
+			for (let cnt = Object.keys(selectors).length; (result = reg.exec(content)) !== null;) {
+				if (selectors.map(x => x.sel).indexOf(result[1]) === -1) {
+					selectors.push({ sel: result[1], mini: generateLexiString(cnt++) });
+				}
+			}
 
-      // @ Sort selectors list by string length to prevent conflict when replacing
+			// @ Sort selectors list by string length to prevent conflict when replacing
 
-      selectors.sort((a,b) => {
-        if (a.sel.length > b.sel.length)
-          return -1;
-        if (a.sel.length < b.sel.length)
-          return 1;
-        return 0;
-      })   
-            
-      
-      // @ Replace old selectors by the new ones
+			selectors.sort((a, b) => {
+				if (a.sel.length > b.sel.length)
+					return -1;
+				if (a.sel.length < b.sel.length)
+					return 1;
+				return 0;
+			});
 
-      for (let sel of selectors) {      
-        content = content.replace(new RegExp(sel.sel, "gm"), sel.mini)
-      }
+			// @ Replace old selectors by the new ones
 
-      // @ Put the minified content in a new file
-      
-      let newfile = file.clone();
-      newfile.contents = new Buffer.from(content)
-      
-      // @ Return to pipeline
+			for (const sel of selectors) {
+				content = content.replace(new RegExp(sel.sel, 'gm'), sel.mini);
+			}
 
-      return callback(null, newfile);
-    }
-    catch(e) {
-      this.emit("error", new PluginError(PLUGIN_NAME, e.message));
-      return callback(null, file);
-    }
-  })
+			// @ Put the minified content in a new file
+
+			const newfile = file.clone();
+			newfile.contents = new Buffer.from(content);
+
+			// @ Return to pipeline
+
+			return callback(null, newfile);
+		}
+		catch (error) {
+			this.emit('error', new PluginError(PLUGIN_NAME, error.message));
+			return callback(null, file);
+		}
+	});
 }
 
 /**
  * Generate a lexicographical string
- * 
+ *
  * @param {integer} step - A number representing the lexicographical step
  * @return {string} The lexicographical string
  */
-function genLexStr( step ) {
+function generateLexiString(step) {
 
-  // @ Parameter filtering
+	// @ Parameter filtering
 
-  if( step < 0 ) throw new RangeError("Index cannot be lower than 0")
-  step = parseInt(step)
+	if (step < 0) throw new RangeError('Index cannot be lower than 0');
+	step = parseInt(step, 10);
 
-  // @ Variables initialisation
+	// @ Variables initialisation
 
-  const chars = Array.from("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-  for( var nb = 1; step >= Math.pow(chars.length, nb); nb++ );
-  let short = "";
+	const chars = Array.from('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
+	let nb;
+	for (nb = 1; step >= Math.pow(chars.length, nb); nb++);
+	let short = '';
 
-  // @ String building
+	// @ String building
 
-  (function getLetter ( val, op ) {
-    let letter = Math.floor( val / Math.pow(chars.length, op) % chars.length );
-    if( op === nb-1 && op > 0 ) letter--;
+	(function getLetter(val, op) {
+		let letter = Math.floor(val / Math.pow(chars.length, op) % chars.length);
+		if (op === nb - 1 && op > 0) letter--;
 
-    short += chars[letter]
-    
-    val = val >= Math.pow(chars.length, op) ? val - Math.pow(chars.length, op) : val
-    if(op > 0) getLetter( val, --op )
-  })( step, nb - 1 )
-  
-  // @ Return
+		short += chars[letter];
 
-  return short;
+		val = val >= Math.pow(chars.length, op) ? val - Math.pow(chars.length, op) : val;
+		if (op > 0) getLetter(val, --op);
+	})(step, nb - 1);
+
+	// @ Return
+
+	return short;
 }
 
 module.exports = gulpMinifySelectors;
