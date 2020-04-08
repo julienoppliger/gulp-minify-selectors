@@ -1,4 +1,4 @@
-# gulp-minify-selectors [![npm version](https://badge.fury.io/js/gulp-minify-selectors.svg)](https://www.npmjs.com/package/gulp-minify-selectors)
+# gulp-minify-selectors [![npm version](https://badge.fury.io/js/gulp-minify-selectors.svg)](https://www.npmjs.com/package/gulp-minify-selectors) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 > A simple [gulp](https://github.com/wearefractal/gulp) plugin to minify selectors through your entire project.
 
 ## Install
@@ -80,7 +80,7 @@ return gulp.src(['src/style.css','src/index.js', 'src/index.html'])
 ```
 You can use *gulp-minify-selectors* with every file extension since it uses basic regex to operate the substitutions. This example show *.css*, *.js* and *.html* but you can also do it with *.jsx*, *.pug*, *.scss*, *.ts* or wathever you want. 
 
-The only things you have to do is the prefix or suffix or prefix and suffix your actual selectors so that the tool can identify them. **By default it expect *-s-* prefix and no suffix**.
+The only things you have to do is prefixing or suffixing or prefixing and suffixing your actual selectors so that the tool can identify them. **By default it expect *-s-* prefix and no suffix**.
 
 You can obviously override default settings by passing an options object like the following example:
 
