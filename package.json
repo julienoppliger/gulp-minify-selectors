@@ -35,6 +35,6 @@
     "gulp-clean-css": "^4.3.0",
     "gulp-sass": "^4.0.2",
     "gulp-sourcemaps": "^2.6.5",
-    "mocha": "^7.1.1"
+    "mocha": "^10.2.0"
   }
 }
